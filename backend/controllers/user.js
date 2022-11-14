@@ -6,9 +6,7 @@ const registerUser = async (req, res) => {
   try {
 
     const { email, password , name } = req.body
-    //Encrpt password before you save 
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
+
 
     // Check if user exists
     const userExists = await User.findOne({ email });
@@ -20,7 +18,7 @@ const registerUser = async (req, res) => {
 
     const user = await User.create({
         name,
-        password: hashedPassword,
+        password,
         email
     });
 
