@@ -1,9 +1,28 @@
 const { response } = require("express");
 const User = require("../models/user");
+const bcrypt = require("bcryptjs")
 
 const registerUser = async (req, res) => {
   try {
-    const user = await User.create(req.body);
+
+    const { email, password , name } = req.body
+    //Encrpt password before you save 
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
+
+    // Check if user exists
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      response.status(400);
+      throw new Error("Email address already exists");
+    }
+
+
+    const user = await User.create({
+        name,
+        password: hashedPassword,
+        email
+    });
 
     //validation
     if (!req.body.name || !req.body.email || !req.body.password) {
@@ -15,15 +34,7 @@ const registerUser = async (req, res) => {
       throw new Error("The password must be at least 6 characters");
     }
 
-    // Check if user exists
-    const {email } = req.body.email;
-
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      response.status(400);
-      throw new Error("Email address already exists");
-    }
-
+    
     //Send back data
     res.json(user);
     console.log(user, "User created successfully");
