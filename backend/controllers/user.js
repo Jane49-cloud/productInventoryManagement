@@ -107,12 +107,25 @@ const loginUser= async (req, res) =>{
      res.status(400)
     throw new Error("password or email incorrect")
    }
+}
 
+//logoutUser
+const logoutUser = async (req, res) => {
+   // you can either delete the cookie or expire the cookie, I will do exipirection
 
-
+    //send HTTP-only cookie
+    res.cookie("token", "", {
+      Path: "/",     
+      HttpOnly: true,
+      Expires: new Date(0), //current second
+      SameSite: "none",
+      Secure: true,
+    });
+    return  res.status(200).json({msg : "Successully logged out"});
 }
 
 module.exports = {
   registerUser,
   loginUser,
+  logoutUser,
 };
