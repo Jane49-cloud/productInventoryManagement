@@ -4,11 +4,14 @@ const cors= require('cors')
 const connection = require('./connection/db')
 const userRoute = require('./routes/user')
 const errorHandler = require('./middleware/errors')
+const cookieParser = require("cookie-parser")
+
 
 const app = express()
 
 //middleware
 app.use(express.json())
+app.use(cookieParser())
 app.use(express.urlencoded({extended:false}))
 app.use(bodyParser.json())
 app.use(cors())
