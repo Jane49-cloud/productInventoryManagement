@@ -5,9 +5,9 @@ require("dotenv").config();
 const loginRequired = async (req, res, next) => {
   try {
     //check if the request has a cookie
-    const token = req.cookies.token
-     
-   if (!token) {
+    const token = req.cookies.token;
+
+    if (!token) {
       res.status(401);
       throw new Error(`Not authorized , please login`);
     }

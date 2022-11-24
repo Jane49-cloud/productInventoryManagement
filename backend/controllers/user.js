@@ -1,8 +1,8 @@
 const { response } = require("express");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
-const asyncHandler = require('express-async-handler')
-const bcrypt = require('bcryptjs')
+const asyncHandler = require("express-async-handler");
+const bcrypt = require("bcryptjs");
 
 //Generate a token
 const generateToken = (id) => {
@@ -60,7 +60,6 @@ const registerUser = async (req, res) => {
   }
 };
 
-
 // login user also start using async-handler
 
 const loginUser = async (req, res) => {
@@ -68,18 +67,18 @@ const loginUser = async (req, res) => {
 
   //validate request
   if (!email || !password) {
-    res.status(400)
-    throw new Error('please enter add email and password')
+    res.status(400);
+    throw new Error("please enter add email and password");
   }
   // Check if user exists
-  const user = await User.findOne({ email })
+  const user = await User.findOne({ email });
 
   if (!user) {
-    res.status(400)
-    throw new Error("User with that email not found , please register")
+    res.status(400);
+    throw new Error("User with that email not found , please register");
   }
   // user exists, Check if the password is correct
-  const passwordCorrect = await bcrypt.compare(password, user.password)
+  const passwordCorrect = await bcrypt.compare(password, user.password);
 
   //generate a token
   const token = generateToken(user._id);
@@ -94,20 +93,16 @@ const loginUser = async (req, res) => {
   });
 
   if (user && passwordCorrect) {
-    const user = req.body
-    res.status(200).json(
-      {
-        user, // you may display all the fields too
-        token
-      }
-    )
+    const user = req.body;
+    res.status(200).json({
+      user, // you may display all the fields too
+      token,
+    });
+  } else {
+    res.status(400);
+    throw new Error("password or email incorrect");
   }
-
-  else {
-    res.status(400)
-    throw new Error("password or email incorrect")
-  }
-}
+};
 
 //logoutUser
 const logoutUser = async (req, res) => {
@@ -122,14 +117,14 @@ const logoutUser = async (req, res) => {
     Secure: true,
   });
   return res.status(200).json({ msg: "Successully logged out" });
-}
+};
 //get/ fetch User
 const getUser = async (req, res) => {
- const id = req.user._id
-const user = await User.findOne({id})
+  const id = req.user._id;
+  const user = await User.findOne({ id });
 
   if (user) {
-    const { _id, name, photo, email, bio, phone } = user
+    const { _id, name, photo, email, bio, phone } = user;
     res.status(200).json({
       _id,
       name,
@@ -137,17 +132,12 @@ const user = await User.findOne({id})
       phone,
       bio,
       email,
-    })
+    });
+  } else {
+    res.status(401);
+    throw new Error("user not found");
   }
-  else{
-    res.status(401)
-    throw new Error ("user not found")   
-  }
-  
-
-
-}
-
+};
 
 module.exports = {
   registerUser,

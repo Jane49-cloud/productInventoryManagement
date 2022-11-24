@@ -1,18 +1,15 @@
-const { response } = require("express")
-require('dotenv').config()
+const { response } = require("express");
+require("dotenv").config();
 
-const errorHandler =(err, req, res, next)=>{
-const statusCode =  res.statusCode ? res.statusCode() : 500
-res.status(statusCode)
+const errorHandler = (err, req, res, next) => {
+  const statusCode = res.statusCode ? res.statusCode() : 500;
+  res.status(statusCode);
 
-res.json({
+  res.json({
     message: err.message,
-    stack: process.env.NODE_ENV === 'development' ? err.stack : null
-})
-next()
+    stack: process.env.NODE_ENV === "development" ? err.stack : null,
+  });
+  next();
+};
 
-}
-
-
-
-module.exports = errorHandler
+module.exports = errorHandler;
